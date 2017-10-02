@@ -6,57 +6,48 @@ import {Layout, Button, Menu} from 'antd';
 import {
   BrowserRouter as Router,
   Route,
-  Link
+  Link,
+  Switch
 } from 'react-router-dom';
 const { Header, Footer, Sider, Content } = Layout;
 
-
-
-
-
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.handleSelect = this.handleSelect.bind(this);
-    this.state = {nav: "/"};
-  }
-  handleSelect(e) {
-    console.log(e);
-    console.log(`selected ${e.key}`);
-    this.setState({nav: `/${e.key}`});
-  }
   render() {
     return (
       <div className="App">
-
-        <Layout>
-          <Header>
-            <div className="logo" />
-          </Header>
-          <Layout>
-            <Sider
-              breakpoint="lg"
-              collapsedWidth="0"
-              onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
-            >
-              <Menu mode="inline" onSelect={this.handleSelect}>
-                <Menu.Item key="chronograf">Chronograf</Menu.Item>
-                <Menu.Item key="rabbitmq">RabbitMQ</Menu.Item>
-                <Menu.Item key="consul">Consul</Menu.Item>
-                <Menu.Item key="airflow">Airflow</Menu.Item>
-                <Menu.Item key="celery">Celery</Menu.Item>
-                <Menu.Item key="grafana">Grafana</Menu.Item>
-                <Menu.Item key="kibana">Kibana</Menu.Item>
-              </Menu>
-            </Sider>
-            <Content><MainBody src={this.state.nav}/></Content>
-          </Layout>
-          <Footer>footer</Footer>
-        </Layout>
-
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/chronograf" component={() => <Home src="/chronograf" />} />
+          </Switch>
+        </Router>
       </div>
     );
   }
+}
+
+class Home extends React.Component {
+  render() {
+    return (
+      <Layout>
+        <Layout>
+          <Sider
+            breakpoint="lg"
+            collapsedWidth="0"
+          >
+           <Menu>
+             <Link to="/chronograf">chronograf</Link>
+             <Link to="/">Home</Link>
+           </Menu>
+         </Sider>
+      </Layout>
+      <Content>
+        <MainBody src={this.props.src} />
+      </Content>
+      <Footer>footer</Footer>
+     </Layout>
+   );
+ }
 }
 
 class MainBody extends React.Component{
